@@ -7,15 +7,14 @@
     $Query = $ConnectionString -> query($QueryString);
     while($rows = $Query -> fetch_array(MYSQLI_NUM)){
         $respuesta = "
-            <tr>
+            <tr class='compras' id='$rows[0]'>
                 <td>$rows[1]</td>
                 <td></td>
                 <td>$rows[2]</td>
                 <td></td>
-                <td></td>
+                <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
             </tr>
         ";
     }
     echo $respuesta;
 ?>
-
