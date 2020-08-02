@@ -2,19 +2,44 @@
     include ("conexion.php");
     $respuesta = "";
     $codigo = $_POST['codigo'];
+    $cantidad = 0;
+    $subtotal = 0;
 
-    $QueryString = "SELECT * FROM Productos WHERE ID_Producto = '$codigo'";
-    $Query = $ConnectionString -> query($QueryString);
-    while($rows = $Query -> fetch_array(MYSQLI_NUM)){
-        $respuesta = "
-            <tr class='compras' id='$rows[0]'>
-                <td>$rows[1]</td>
-                <td></td>
-                <td>$rows[2]</td>
-                <td></td>
-                <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
-            </tr>
-        ";
+    if((substr(strchr($codigo, "*"),0,1)) == "*" ){ //sirve para saber si es mas de un producto
+        $aux = stripos($codigo, "*"); //solo es para saber en que posicion del string está el asterisco
+        $cantidad = substr($codigo,0,$aux); //extrae la cantidad de productos
+        $codigo = substr(strchr($codigo, "*"),1); //extrae el código del producto
+        $QueryString = "SELECT * FROM Productos WHERE ID_Producto = '$codigo'";
+        $Query = $ConnectionString -> query($QueryString);
+        while($rows = $Query -> fetch_array(MYSQLI_NUM)){
+            $subtotal = $cantidad * $rows[2]; //Aquí hacemos las operaciones para sacar el subtotal
+            $respuesta = "
+                <tr class='compras' id='$rows[0]'>
+                    <td>$rows[1]</td>
+                    <td>$cantidad</td>
+                    <td>$rows[2]</td>
+                    <td>$subtotal</td>
+                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
+                </tr>
+            ";
+        }
+    }
+    else{
+        $cantidad = 1;
+        $QueryString = "SELECT * FROM Productos WHERE ID_Producto = '$codigo'";
+        $Query = $ConnectionString -> query($QueryString);
+        while($rows = $Query -> fetch_array(MYSQLI_NUM)){
+            $subtotal = $cantidad * $rows[2];
+            $respuesta = "
+                <tr class='compras' id='$rows[0]'>
+                    <td>$rows[1]</td>
+                    <td>$cantidad</td>
+                    <td>$rows[2]</td>
+                    <td>$subtotal</td>
+                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
+                </tr>
+            ";
+        }
     }
     echo $respuesta;
 ?>

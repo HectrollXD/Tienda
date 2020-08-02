@@ -22,6 +22,7 @@ function enabled(){
     $("#finalizar").prop("disabled",false);
     $("#cancelar").prop("disabled",false);
     $("#empezar").prop("disabled",true);
+    $("#idpro").focus();
 }
 
 function traer(){
