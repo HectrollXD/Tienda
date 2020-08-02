@@ -1,7 +1,8 @@
 <?php
     include ("conexion.php");
-    $respuesta = "";
+    $respuesta = array();
     $codigo = $_POST['codigo'];
+    //$codigo = "2*2";
     $cantidad = 0;
     $subtotal = 0;
 
@@ -13,13 +14,13 @@
         $Query = $ConnectionString -> query($QueryString);
         while($rows = $Query -> fetch_array(MYSQLI_NUM)){
             $subtotal = $cantidad * $rows[2]; //Aquí hacemos las operaciones para sacar el subtotal
-            $respuesta = "
+            $respuesta['tabla'] = "
                 <tr class='compras' id='$rows[0]'>
                     <td>$rows[1]</td>
                     <td>$cantidad</td>
                     <td>$rows[2]</td>
                     <td>$subtotal</td>
-                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
+                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]' subtotal='$subtotal'></td>
                 </tr>
             ";
         }
@@ -30,16 +31,17 @@
         $Query = $ConnectionString -> query($QueryString);
         while($rows = $Query -> fetch_array(MYSQLI_NUM)){
             $subtotal = $cantidad * $rows[2];
-            $respuesta = "
+            $respuesta['tabla'] = "
                 <tr class='compras' id='$rows[0]'>
                     <td>$rows[1]</td>
                     <td>$cantidad</td>
                     <td>$rows[2]</td>
                     <td>$subtotal</td>
-                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]'></td>
+                    <td><input type='button' value='eliminar' class='btnerr' id='$rows[0]' subtotal='$subtotal'></td>
                 </tr>
             ";
         }
     }
-    echo $respuesta;
+    $respuesta['sub'] = $subtotal;
+    echo json_encode($respuesta);
 ?>

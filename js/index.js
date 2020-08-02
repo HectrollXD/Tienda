@@ -1,4 +1,5 @@
 $(document).ready(main);
+var total = 0;
 
 function main(){
     disabled();
@@ -15,6 +16,8 @@ function disabled(){
     $("#cancelar").prop("disabled",true);
     $("#empezar").prop("disabled",false);
     $(".compras").remove();
+    total = 0;
+    $("#totales").text("");
 }
 
 function enabled(){
@@ -35,18 +38,17 @@ function traer(){
             type: 'POST',
             url: 'php/productos.php',
             data: id,
-            dataType: 'html'
+            dataType: 'json',
+            encode: true
         }).done(
             function(data){
-                $("#tbody").append(data);
+                $("#tbody").append(data.tabla);
                 $("#idpro").val("");
+                total += data.sub;
+                $("#totales").text("Total: $"+total);
             }
         )
     }
-}
-
-function insertar(){ //con esta funcion hacemos la inserción de la compra
-
 }
 
 function obtenerFolio(){ //Con esta mamada genera el numero unico del folio.
@@ -62,7 +64,22 @@ function enter(event){ //con esta mamada haces el evento del enter
     }
 }
 
-function eliminar(){
-    var producto = { "producto": $(this).attr("id") };
+function eliminar(){ //con esta funcion eliminamos la fila del producto
+    var producto = { 
+        "producto": $(this).attr("id"),
+        "precio": $(this).attr("subtotal")
+    };
     $("#"+producto['producto']).remove();
+    total -= producto['precio'];
+    $("#totales").text("Total: $"+total);
+}
+
+function insertar(){ //con esta funcion hacemos la inserción de la compra
+    //chente, aquí toca la insersion, de eso te encargas tu XD
+    /*lo que necesitas para la insercion es obtener los campos de los <tr> de la tabla y
+        a su vez, enviar la variable de total y traer la funcion de folio para que lo envies
+        con ajax, solo eso.
+    
+        todo lo tienes que hacer en esta funcion, ya está asociada con el evento.
+    */
 }
